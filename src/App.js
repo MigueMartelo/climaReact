@@ -1,19 +1,18 @@
-import React, { Component } from 'react';
-import Header from './componentes/Header';
-import Formulario from './componentes/Formulario';
-import Error from './componentes/Error';
-import Clima from './componentes/Clima';
+import React, { Component } from "react";
+import Header from "./componentes/Header";
+import Formulario from "./componentes/Formulario";
+import Error from "./componentes/Error";
+import Clima from "./componentes/Clima";
 
 class App extends Component {
-
   state = {
-    error: '',
+    error: "",
     consulta: {},
     resultado: {}
-  }
+  };
 
-  componentDidUpdate (prevProps, prevState) {
-    if(prevState.consulta !== this.state.consulta) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.consulta !== this.state.consulta) {
       this.consultarApi();
     }
   }
@@ -21,14 +20,14 @@ class App extends Component {
   componentDidMount() {
     this.setState({
       error: false
-    })
+    });
   }
 
   consultarApi = () => {
-    const {ciudad, pais} = this.state.consulta;
-    if(!ciudad || !pais) return null;
+    const { ciudad, pais } = this.state.consulta;
+    if (!ciudad || !pais) return null;
 
-    const appId = '2b4b47fdadab1f6410a10970ea85904b';
+    const appId = "2b4b47fdadab1f6410a10970ea85904b";
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${appId}`;
 
     // query con fetch api
@@ -46,13 +45,12 @@ class App extends Component {
       });
 
     // leer la url y agregar el API key
-    
 
     // consultar con fecth
-  }
+  };
 
   datosConsulta = respuesta => {
-    if(respuesta.ciudad === '' || respuesta.pais === '') {
+    if (respuesta.ciudad === "" || respuesta.pais === "") {
       this.setState({
         error: true
       });
@@ -62,26 +60,26 @@ class App extends Component {
         consulta: respuesta
       });
     }
-  }
+  };
 
   render() {
+    const { error } = this.state,
+      { cod } = this.state.resultado;
 
-    const error = this.state.error;
     let resultado;
 
-    if(error) {
-      resultado = <Error mensaje = "Ambos campos son obligatorios" />
+    if (error) {
+      resultado = <Error mensaje="Ambos campos son obligatorios" />;
+    } else if (cod === "404") {
+      resultado = <Error mensaje="Ciudad no encontrada" />;
     } else {
-      resultado = <Clima resultado = {this.state.resultado} />
+      resultado = <Clima resultado={this.state.resultado} />;
     }
 
     return (
       <div>
-        <Header titulo="Clima React"/>
-        <Formulario
-          datosConsulta = {this.datosConsulta}
-        />
-        {resultado}
+        <Header titulo="Clima React" />
+        <Formulario datosConsulta={this.datosConsulta} /> {resultado}
       </div>
     );
   }
